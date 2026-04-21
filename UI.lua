@@ -87,12 +87,16 @@ local function addInnerBorder(f)
     local r = newTex(f, "BORDER", C_BORDER); r:SetPoint("TOPRIGHT");   r:SetPoint("BOTTOMRIGHT"); r:SetWidth(1)
 end
 
-local function addCorners(f)
+-- Fel-green L-brackets, 10px arms, 2px thick, flush to corners.
+-- If resizeButton is provided, the BOTTOMRIGHT bracket is parented to it so
+-- the bracket itself acts as the resize grip.
+local function addCorners(f, resizeButton)
     for _, p in ipairs({ "TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT" }) do
-        local h = f:CreateTexture(nil, "OVERLAY"); h:SetColorTexture(unpack(C_GREEN))
-        h:SetPoint(p, f, p, 0, 0); h:SetSize(BRACKET, 2)
-        local v = f:CreateTexture(nil, "OVERLAY"); v:SetColorTexture(unpack(C_GREEN))
-        v:SetPoint(p, f, p, 0, 0); v:SetSize(2, BRACKET)
+        local host = (p == "BOTTOMRIGHT" and resizeButton) or f
+        local h = host:CreateTexture(nil, "OVERLAY"); h:SetColorTexture(unpack(C_GREEN))
+        h:SetPoint(p, host, p, 0, 0); h:SetSize(BRACKET, 2)
+        local v = host:CreateTexture(nil, "OVERLAY"); v:SetColorTexture(unpack(C_GREEN))
+        v:SetPoint(p, host, p, 0, 0); v:SetSize(2, BRACKET)
     end
 end
 
@@ -118,6 +122,33 @@ local function makeButton(parent, label, width, height)
     b:SetScript("OnEnter", function(self) self.bg:SetColorTexture(C_TAB_BG_SEL[1], C_TAB_BG_SEL[2], C_TAB_BG_SEL[3], 1) end)
     b:SetScript("OnLeave", function(self) self.bg:SetColorTexture(C_TAB_BG[1], C_TAB_BG[2], C_TAB_BG[3], 1) end)
     return b
+end
+
+-- ============================================================
+-- Chip width measurement
+-- ------------------------------------------------------------
+-- A chip's FontString is anchored LEFT+RIGHT inside the chip — calling
+-- GetStringWidth on it can return a clamped/zero value on first render
+-- (before WoW has finalized the parent frame's width), which produces
+-- overlapping chips. Use a dedicated unanchored FontString so widths
+-- are always the intrinsic text width.
+-- ============================================================
+local _measureFS
+local _widthCache = {}
+local function measureChipWidth(label)
+    if _widthCache[label] then return _widthCache[label] end
+    if not _measureFS then
+        _measureFS = UIParent:CreateFontString(nil, "OVERLAY")
+        _measureFS:SetFont("Fonts\\FRIZQT__.TTF", 10, "")
+        _measureFS:SetWordWrap(false)
+        _measureFS:Hide()
+    end
+    _measureFS:SetText(label)
+    -- Bigger pad (+20) than strict (text+12 = text + LEFT inset + RIGHT inset)
+    -- to absorb any rendering discrepancy between measureFS and chip.text.
+    local w = math.max(44, math.ceil(_measureFS:GetStringWidth()) + 20)
+    _widthCache[label] = w
+    return w
 end
 
 -- ============================================================
@@ -154,8 +185,8 @@ local function getChip(i)
     b:SetHeight(20)
     local bg = newTex(b, "BACKGROUND", C_INPUT_BG); bg:SetAllPoints(); b.bg = bg
     addInnerBorder(b)
-    local t = newText(b, 10, C_GREEN); t:SetPoint("LEFT", 6, 0); t:SetPoint("RIGHT", -6, 0)
-    t:SetJustifyH("CENTER")
+    local t = newText(b, 10, C_GREEN); t:SetPoint("CENTER")
+    t:SetWordWrap(false)
     b.text = t
     b:SetScript("OnEnter", function(self)
         self.bg:SetColorTexture(C_TAB_BG_SEL[1], C_TAB_BG_SEL[2], C_TAB_BG_SEL[3], 1)
@@ -190,8 +221,7 @@ local function layoutChips(startIndex, items, topY, parentRightEdge, color)
         if color then chip.text:SetTextColor(color[1], color[2], color[3], 1) end
         chip:SetScript("OnClick", function() insertAtCursor(item.insert) end)
 
-        local textW = chip.text:GetStringWidth()
-        local w = math.max(44, math.ceil(textW) + 14)
+        local w = measureChipWidth(item.label)
         chip:SetWidth(w)
 
         if x + w > parentRightEdge - FRAME_PAD then
@@ -245,7 +275,7 @@ local function renderGeneralSource()
     header1:SetPoint("TOPLEFT", frame, "TOPLEFT", FRAME_PAD, -(SOURCE_TOP + 2))
 
     local y = -(SOURCE_TOP + 18)
-    local rightEdge = FRAME_W
+    local rightEdge = frame:GetWidth()
     local nextIdx = 1
     y, nextIdx = layoutChips(nextIdx, ns.CONDITIONALS, y, rightEdge, C_GREEN)
 
@@ -518,7 +548,7 @@ local function buildEditorPanel()
     editBox:SetAutoFocus(false)
     editBox:SetFontObject("ChatFontNormal")
     editBox:SetTextInsets(0, 0, 0, 0)
-    editBox:SetWidth(FRAME_W - 2 * FRAME_PAD - 32)
+    editBox:SetWidth(frame:GetWidth() - 2 * FRAME_PAD - 32)
     editBox:SetHeight(EDITOR_H - 12)
     editBox:SetScript("OnEscapePressed", function(self) self:ClearFocus() end)
     editBox:SetScript("OnTextChanged", function() updateCharCount() end)
@@ -587,21 +617,39 @@ local function buildEditorPanel()
         flashStatus(("Loaded: %s (slot %d)"):format(name, abs), C_GREEN)
     end)
 
+    -- Delete requires confirmation via StaticPopup so a mis-click doesn't
+    -- nuke a macro. Popup body substitutes %s with the macro name.
+    StaticPopupDialogs["WSMB_CONFIRM_DELETE"] = {
+        text = "Delete macro '%s'?\n\nThis cannot be undone.",
+        button1 = DELETE or "Delete",
+        button2 = CANCEL or "Cancel",
+        OnAccept = function(self, data)
+            if not data or not data.abs then return end
+            local deletedName = GetMacroInfo(data.abs)
+            local ok, err = ns.MacroAPI:DeleteAt(data.abs)
+            if ok then
+                if state.editingAbsSlot == data.abs then state.editingAbsSlot = nil end
+                local count = ns.MacroAPI:CountScope(state.scope)
+                if state.browseIndex > count then state.browseIndex = math.max(1, count) end
+                updatePickerLabel()
+                updateModeHint()
+                flashStatus(("Deleted: %s"):format(deletedName or "?"), C_WARN)
+            else
+                flashStatus(err or "Delete failed.", C_ERROR)
+            end
+        end,
+        timeout = 0,
+        whileDead = true,
+        hideOnEscape = true,
+        preferredIndex = 3,
+    }
+
     deleteBtn:SetScript("OnClick", function()
         local abs = ns.MacroAPI:AbsByBrowse(state.scope, state.browseIndex)
         if not abs then flashStatus("Nothing to delete.", C_WARN); return end
-        local deletedName = GetMacroInfo(abs)
-        local ok, err = ns.MacroAPI:DeleteAt(abs)
-        if ok then
-            if state.editingAbsSlot == abs then state.editingAbsSlot = nil end
-            local count = ns.MacroAPI:CountScope(state.scope)
-            if state.browseIndex > count then state.browseIndex = math.max(1, count) end
-            updatePickerLabel()
-            updateModeHint()
-            flashStatus(("Deleted: %s"):format(deletedName or "?"), C_WARN)
-        else
-            flashStatus(err or "Delete failed.", C_ERROR)
-        end
+        local name = GetMacroInfo(abs) or "?"
+        local dialog = StaticPopup_Show("WSMB_CONFIRM_DELETE", name)
+        if dialog then dialog.data = { abs = abs } end
     end)
 
     saveBtn:SetScript("OnClick", function()
@@ -652,14 +700,30 @@ end
 function UI:Build()
     if frame then return end
     frame = CreateFrame("Frame", "WICKSMACROBUILDERFrame", UIParent)
-    frame:SetSize(FRAME_W, FRAME_H)
+    local savedW = WICKSMACROBUILDERDB and WICKSMACROBUILDERDB.width  or FRAME_W
+    local savedH = WICKSMACROBUILDERDB and WICKSMACROBUILDERDB.height or FRAME_H
+    frame:SetSize(savedW, savedH)
     frame:SetPoint("CENTER")
     frame:SetMovable(true)
+    frame:SetResizable(true)
+    if frame.SetResizeBounds then
+        frame:SetResizeBounds(FRAME_W, FRAME_H)        -- modern API (10.x)
+    elseif frame.SetMinResize then
+        frame:SetMinResize(FRAME_W, FRAME_H)            -- classic API
+    end
     frame:EnableMouse(true)
     frame:SetFrameStrata("DIALOG")
     frame:RegisterForDrag("LeftButton")
     frame:SetScript("OnDragStart", frame.StartMoving)
     frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
+    frame:SetScript("OnSizeChanged", function(self)
+        WICKSMACROBUILDERDB.width  = self:GetWidth()
+        WICKSMACROBUILDERDB.height = self:GetHeight()
+        if editBox then
+            editBox:SetWidth(self:GetWidth() - 2 * FRAME_PAD - 32)
+        end
+        if selectedSource then renderSource() end
+    end)
     frame:Hide()
 
     local bg = newTex(frame, "BACKGROUND", C_BG); bg:SetAllPoints()
@@ -730,7 +794,18 @@ function UI:Build()
         updateCharCount()
     end
 
-    addCorners(frame)
+    -- BOTTOMRIGHT resize grip. The fel-green L-bracket is parented to this
+    -- button (see addCorners below) so the bracket itself is the grip.
+    local grip = CreateFrame("Button", nil, frame)
+    grip:SetSize(BRACKET + 2, BRACKET + 2)
+    grip:SetPoint("BOTTOMRIGHT", 0, 0)
+    grip:EnableMouse(true)
+    grip:SetScript("OnMouseDown", function(_, btn)
+        if btn == "LeftButton" then frame:StartSizing("BOTTOMRIGHT") end
+    end)
+    grip:SetScript("OnMouseUp", function() frame:StopMovingOrSizing() end)
+
+    addCorners(frame, grip)
 
     self.frame = frame
 end
