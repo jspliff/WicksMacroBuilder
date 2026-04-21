@@ -6,4 +6,5 @@
 ## SavedVariables: WICKSMACROBUILDERDB
 
 Core.lua
+Data.lua
 UI.lua
