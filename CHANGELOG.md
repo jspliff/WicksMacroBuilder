@@ -2,10 +2,6 @@
 
 ## 0.1.0 — 2026-04-22
 
-- (edit this entry with the actual changes)
-
-## 0.1.0 — 2026-04-21
-
 ### Initial release
 
 Brand-consistent with the rest of the [Wick suite](https://github.com/jspliff/WickSuite).
