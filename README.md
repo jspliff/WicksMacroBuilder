@@ -2,7 +2,7 @@
 
 # Wick's Macro Builder
 
-> A clean macro editor for TBC Classic with conditional chips, common-command shortcuts, and curated class presets (Druid, Priest, Shaman, Paladin, Mage, Warlock, Warrior, Rogue, Hunter).
+> A clean macro editor for TBC Classic. Build your macro with click-to-insert chips, pick an icon, then drag it straight onto your action bars — no switching to Blizzard's macro window.
 
 Part of the **[Wick suite](https://github.com/jspliff/WickSuite)** — precision TBC Classic addons with a shared fel-green-on-deep-purple aesthetic.
 
@@ -17,12 +17,15 @@ Part of the **[Wick suite](https://github.com/jspliff/WickSuite)** — precision
 
 ## Features
 
-- **General tab** — one-click insertion of `@mouseover`, `@focus`, `[mod:shift]`, `[help]`, `[harm]`, `[stance:…]`, `[form:…]` and other conditionals.
-- **Command chips** — `#showtooltip`, `/cast`, `/castsequence`, `/cancelaura`, `/cancelform`, `/stopcasting`, `/use`, `/petattack` and more.
-- **Class preset library** — curated TBC macros for all 9 classes (Cat+Dash, IF+Trinket+PoH, NS+Healing Wave, Bubblehearth, Stance-swap + ability, etc.). Click a preset to load it into the editor.
+- **Drag macros to your action bars from inside the builder.** Right-side icon strip shows every macro in the current scope with its real icon. Click to load into the editor, drag onto any action-bar slot to equip. No more switching to `/macro`.
+- **Icon picker** — click the `?` button next to Name to pick any macro-eligible icon (`GetMacroIcons` + `GetMacroItemIcons`). Raid macros stop all looking like identical `?` icons.
+- **General tab** — one-click insertion of 20 conditionals (`@mouseover`, `@focus`, `[help]`, `[harm]`, `[mod:shift]`, `[stance:…]`, `[form:…]`, and more) and 18 slash commands (`#showtooltip`, `/cast`, `/castsequence`, `/cancelaura`, `/cancelform`, `/stopcasting`, `/use`, `/petattack`, `/focus`, and the rest). Hover any chip for a plain-English description.
+- **Class preset library** — 54 curated TBC-correct macros across all 9 classes (Cat+Dash, IF+Trinket+PoH, NS+Healing Wave, Bubblehearth, Stance-swap + ability, etc.). Click a preset to load it into the editor as a starting point.
 - **Live 255-character counter** — green → amber → red as you approach the macro cap.
-- **Save to slot** — choose Global or Per-Character scope, pick a slot, save.
-- **No combat lockdown issues** — the addon only edits macro text; your action bars aren't touched.
+- **Smart save flow** — click an existing icon to load-and-edit-in-place, or clear and hit **Create New** to append. Mode hint strip tells you which is which.
+- **Confirmation before delete** — popup prevents mis-click nukes.
+- **Global and Per-Character scope** — toggle at the top of the icon strip.
+- **Resizable** — BOTTOMRIGHT fel-green bracket doubles as the grip; chips, presets, and editor reflow.
 
 ## Install
 
@@ -35,7 +38,7 @@ Part of the **[Wick suite](https://github.com/jspliff/WickSuite)** — precision
 /wsmb
 ```
 
-Opens the builder. Drag the header to move. Click chips to insert snippets at the cursor; click preset names to load a full macro body.
+Opens the builder. Drag the header to move, drag the BOTTOMRIGHT fel-green bracket to resize. Click chips to insert snippets at the cursor; click preset names to load a full macro body; click an icon in the right strip to load an existing macro; drag an icon from the strip onto your action bar.
 
 ## Compatibility
 
