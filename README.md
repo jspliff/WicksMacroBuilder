@@ -4,16 +4,16 @@
 
 > A clean macro editor for TBC Classic. Build your macro with click-to-insert chips, pick an icon, then drag it straight onto your action bars — no switching to Blizzard's macro window.
 
-Part of the **[Wick suite](https://github.com/jspliff/WickSuite)** — precision TBC Classic addons with a shared fel-green-on-deep-purple aesthetic.
+Part of the **[Wick suite](https://github.com/Wicksmods/WickSuite)** — precision TBC Classic addons with a shared fel-green-on-deep-purple aesthetic.
 
 <!-- wick:suite-table:start -->
 | Addon | GitHub | CurseForge |
 |---|---|---|
-| **Wick's TBC BIS Tracker** | [repo](https://github.com/jspliff/WickidsTBCBISTracker) | [CurseForge](https://www.curseforge.com/wow/addons/wicks-tbc-bis-tracker) |
-| **Wick's CD Tracker** | [repo](https://github.com/jspliff/WicksCDTracker) | [CurseForge](https://www.curseforge.com/wow/addons/wicks-cd-tracker) |
-| **Wick's Trade Hall** | [repo](https://github.com/jspliff/WicksTradeHall) | [CurseForge](https://www.curseforge.com/wow/addons/trade-hall) |
-| **Wick's Macro Builder** | [repo](https://github.com/jspliff/WicksMacroBuilder) | [CurseForge](https://www.curseforge.com/wow/addons/wicks-macro-builder) |
-| **Wick's Combat Log** | [repo](https://github.com/jspliff/WicksCombatLog) | [CurseForge](https://www.curseforge.com/wow/addons/wicks-combat-log) |
+| **Wick's TBC BIS Tracker** | [repo](https://github.com/Wicksmods/WickidsTBCBISTracker) | [CurseForge](https://www.curseforge.com/wow/addons/wicks-tbc-bis-tracker) |
+| **Wick's CD Tracker** | [repo](https://github.com/Wicksmods/WicksCDTracker) | [CurseForge](https://www.curseforge.com/wow/addons/wicks-cd-tracker) |
+| **Wick's Trade Hall** | [repo](https://github.com/Wicksmods/WicksTradeHall) | [CurseForge](https://www.curseforge.com/wow/addons/trade-hall) |
+| **Wick's Macro Builder** | [repo](https://github.com/Wicksmods/WicksMacroBuilder) | [CurseForge](https://www.curseforge.com/wow/addons/wicks-macro-builder) |
+| **Wick's Combat Log** | [repo](https://github.com/Wicksmods/WicksCombatLog) | [CurseForge](https://www.curseforge.com/wow/addons/wicks-combat-log) |
 <!-- wick:suite-table:end -->
 
 ## Features
@@ -31,7 +31,7 @@ Part of the **[Wick suite](https://github.com/jspliff/WickSuite)** — precision
 ## Install
 
 - **CurseForge:** [curseforge.com/wow/addons/macro-builder](https://www.curseforge.com/wow/addons/macro-builder)
-- **Manual:** download the latest ZIP from [Releases](https://github.com/jspliff/WicksMacroBuilder/releases) and extract the `WicksMacroBuilder` folder into `World of Warcraft\_classic_\Interface\AddOns\`.
+- **Manual:** download the latest ZIP from [Releases](https://github.com/Wicksmods/WicksMacroBuilder/releases) and extract the `WicksMacroBuilder` folder into `World of Warcraft\_classic_\Interface\AddOns\`.
 
 ## Usage
 
@@ -54,4 +54,4 @@ Uses the locked Wick palette and 10px/2px fel-green L-bracket chrome. See:
 
 ## License
 
-See `LICENSE` — MIT with a trademark carve-out for the Wick name, logomark, and visual system. Full trademark policy: [WickSuite/TRADEMARK.md](https://github.com/jspliff/WickSuite/blob/main/TRADEMARK.md).
+See `LICENSE` — MIT with a trademark carve-out for the Wick name, logomark, and visual system. Full trademark policy: [WickSuite/TRADEMARK.md](https://github.com/Wicksmods/WickSuite/blob/main/TRADEMARK.md).

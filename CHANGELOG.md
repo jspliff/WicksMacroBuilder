@@ -27,7 +27,7 @@ Major UX rework. Instead of saving to a numbered slot and then switching to Bliz
 
 ### Initial release
 
-Brand-consistent with the rest of the [Wick suite](https://github.com/jspliff/WickSuite).
+Brand-consistent with the rest of the [Wick suite](https://github.com/Wicksmods/WickSuite).
 
 - Tabbed panel: **General** + 9 class tabs (Druid, Priest, Shaman, Paladin, Mage, Warlock, Warrior, Rogue, Hunter).
 - **General tab** — clickable chips for 20 macro conditionals (`@mouseover`, `@focus`, `@player`, `@target`, `help`, `harm`, `exists`, `nodead`, `mod:shift/ctrl/alt`, `combat`, `nocombat`, `stance:1/3`, `form:3`, `stealth`, `nostealth`, and common combos) and 18 slash commands (`#showtooltip`, `/cast`, `/castsequence`, `/use`, `/stopcasting`, `/cancelaura`, `/cancelform`, `/stopattack`, `/startattack`, `/target`, `/focus`, `/clearfocus`, `/petattack`, `/petfollow`, `/dismount`, `/equip`, `/stopmacro`, `/run`).
