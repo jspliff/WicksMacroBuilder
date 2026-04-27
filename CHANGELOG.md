@@ -1,5 +1,15 @@
 # Wick's Macro Builder — Changelog
 
+## 0.2.2 — 2026-04-26
+
+### Title bar slim revert + close-button glyph fix
+
+Reverted the heavier 32px header from 0.2.1 back to the slim CD-Tracker chrome that the suite shipped pre-harmonization — 22px tall, FRIZQT 12 (no outline), plain `×` close button, drop the fel-green underline. Kept the two-tone title color (`Wick's` in fel-green, `Macro Builder` in cream) since that's the part of the 0.2.1 work that worked.
+
+Also: the previous `✕` (U+2715) close glyph was rendering as a tofu/missing-glyph box in `Fonts\FRIZQT__.TTF`. Swapped to `×` (U+00D7) which renders cleanly. This is the visible bug fix users will notice most.
+
+No functional changes.
+
 ## 0.2.1 — 2026-04-25
 
 ### Title bar harmonization

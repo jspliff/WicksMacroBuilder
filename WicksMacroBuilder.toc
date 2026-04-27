@@ -2,7 +2,7 @@
 ## Title: Wick's Macro Builder
 ## Notes: Macro Builder for TBC Classic. Part of the Wick suite.
 ## Author: Wick
-## Version: 0.2.1
+## Version: 0.2.2
 ## SavedVariables: WICKSMACROBUILDERDB
 
 Core.lua
